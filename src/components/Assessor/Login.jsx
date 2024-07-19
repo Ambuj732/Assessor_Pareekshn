@@ -21,7 +21,6 @@ function Login() {
         password: formData?.password,
       };
       setErrors({});
-
       const response = await login(data);
 
       const code = response?.data?.code;
@@ -31,9 +30,12 @@ function Login() {
         console.log("Message :: ", message);
         return;
       }
-      localStorage.setItem("user", JSON.stringify(response.data.usercode));
+      localStorage.setItem(
+        "assessor_user",
+        JSON.stringify(response.data.usercode)
+      );
       //       toast.success("You have successfully logged in!");
-      navigate("/dashboard");
+      navigate("/assessor-dashboard");
     } catch (error) {
       const newErrors = {};
 

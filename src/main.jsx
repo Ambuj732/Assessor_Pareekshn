@@ -10,7 +10,7 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import Login from "./components/Assessor/Login.jsx";
-import AssessorDashboard from "./components/Assessor/AssessorDashboard.jsx";
+import AssessorDashboard from "./components/Assessor/AssessorHome.jsx";
 import CorporateHome from "./pages/CorporateHome.jsx";
 import BatchDetails from "./components/Assessor/BatchDetails.jsx";
 import StudentDetails from "./components/Assessor/StudentDetails.jsx";
@@ -26,13 +26,23 @@ import PracticalPage from "./components/Assessor/PracticalPage.jsx";
 import QuestionStatus from "./components/Assessor/QuestionStatus.jsx";
 import Feedback from "./components/FeedBack/Feedback.jsx";
 import Feedback2 from "./components/FeedBack/Feedback2.jsx";
+import AssessorDashboard2 from "./components/Assessor/AssessorDashboard.jsx";
+import UploadPhoto from "./components/Assessor/UploadPhoto.jsx";
+import ExamList from "./components/Assessor/ExamList.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<CorporateHome />}>
         <Route path="/" element={<Login />}></Route>
       </Route>
-      <Route path="/dashboard" element={<AssessorDashboard />}></Route>
+
+      <Route
+        path="/assessor-dashboard"
+        element={<AssessorDashboard2 />}
+      ></Route>
+      <Route path="/assessor-examlist" element={<ExamList />}></Route>
+      <Route path="/photo-upload" element={<UploadPhoto />}></Route>
+      <Route path="/assessor-home" element={<AssessorDashboard />}></Route>
       <Route path="/batchdetails" element={<BatchDetails />}></Route>
       <Route path="/studentdetails" element={<StudentDetails />}></Route>
       <Route path="/vivapractical" element={<VivaPractical />}></Route>
