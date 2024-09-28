@@ -24,7 +24,7 @@ function Header() {
       console.log("Instruction ", response);
       if (response?.data?.code === 1000) {
         setInstructions(response?.data.instruction);
-        setModalIsOpen(true); // Ensure this line is within the if statement
+        setModalIsOpen(true);
       }
     } catch (error) {
       console.log("Error while getting data :: ", error);
@@ -42,9 +42,24 @@ function Header() {
             <span className="text-nowrap">Narayan Singh</span>
           </div>
         </div>
-        <div className="flex gap-3 h-10 cursor-pointer">
-          <img src={logout} alt="" />
-          <img src={questionMark} onClick={instructionHandler} alt="" />
+        <div className="flex gap-3 cursor-pointer relative">
+          <div className="relative group">
+            <img src={logout} alt="Logout" className="w-10 h-10" />
+            <span className="absolute top-10  bottom-0 mb-2 opacity-0 group-hover:opacity-100  text-white text-xs rounded px-2 py-1">
+              Logout
+            </span>
+          </div>
+          <div className="relative group">
+            <img
+              src={questionMark}
+              onClick={instructionHandler}
+              alt="Instruction"
+              className="w-10 h-10"
+            />
+            <span className="absolute top-10  bottom-0 mb-2 opacity-0 group-hover:opacity-100  text-white text-xs rounded px-2 py-1">
+              Instruction
+            </span>
+          </div>
           <InstructionModal
             isOpen={modalIsOpen}
             onRequestClose={() => setModalIsOpen(false)}

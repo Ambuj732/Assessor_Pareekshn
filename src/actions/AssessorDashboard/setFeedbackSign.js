@@ -1,10 +1,10 @@
 import { PUBLIC_REST_API_ENDPOINT, BEARER_TOKEN } from "../../constants";
 import axios from "axios";
 
-const vivaExamFetch = async (data) => {
+const setFeedbackSign = async (data) => {
   try {
     const response = await axios.post(
-      `${PUBLIC_REST_API_ENDPOINT}/amsapi/question/viva`,
+      `${PUBLIC_REST_API_ENDPOINT}/amsuser/exam/setSignA`,
       data,
       {
         headers: {
@@ -12,12 +12,12 @@ const vivaExamFetch = async (data) => {
         },
       }
     );
-    console.log("Viva Exam Fetch response :: ", response);
+    console.log("Feedback Sign:: ", response);
     return response;
   } catch (error) {
-    console.log("Error while logging in :: ", error);
+    console.log("Error while logging in feedback sign:: ", error);
     throw error;
   }
 };
 
-export default vivaExamFetch;
+export default setFeedbackSign;

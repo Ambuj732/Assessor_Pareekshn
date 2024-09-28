@@ -11,31 +11,39 @@ import studentdetails from "../../assets/Assessor/studentdetails.png";
 import camera from "../../assets/Assessor/camera.png";
 import upload from "../../assets/Assessor/upload.png";
 import manoj from "../../assets/Assessor/manoj.png";
-import Header from "./Header";
+import Header from "../Assessor/Header";
 import candidateExamStatusandDetailsList from "../../actions/AssessorDashboard/candidateExamStatusandDetailsList";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+import { Oval } from "react-loader-spinner";
 
 function VCPractical() {
   const [studentData, setStudentData] = useState([]);
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const exam_id = location.state?.exam_id;
+  console.log(exam_id);
   const navigate = useNavigate();
+
   const getStudentDetailsData = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(localStorage.getItem("assessor_user"));
       console.log("User :: ", user);
       const data = {
-        usercode: user,
-        assessor_id: 160,
-        exam_id: 8558,
+        usercode: user?.usercode,
+        assessor_id: user?.id,
+        exam_id: exam_id,
       };
       const response = await candidateExamStatusandDetailsList(data);
       console.log(" Candidate Exam Status and Details List", response);
       if (response?.data?.code === 1000)
         setStudentData(response?.data?.students);
+      setLoading(false);
       console.log(response);
     } catch (error) {
       console.log("Error while getting data :: ", error);
       setErrors([error.message]);
+      setLoading(false);
     }
   };
 
@@ -45,6 +53,26 @@ function VCPractical() {
   useEffect(() => {
     getStudentDetailsData();
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="flex justify-center items-center min-h-screen">
+          <Oval
+            height={80}
+            width={80}
+            color="#1C4481"
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#EAF2FE"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col">

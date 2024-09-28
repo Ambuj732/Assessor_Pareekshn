@@ -16,8 +16,8 @@ import next from "/next.png";
 import lock from "/lock.png";
 import timer from "/timer.png";
 import mic from "../../assets/Assessor/mic.png";
-import Header from "./Header";
-import vivaExamFetch from "../../actions/AssessorDashboard/vivaExamFetch";
+import Header from "../Assessor/Header";
+import vivaExamFetch from "../../actions/viva/vivaExamFetch";
 
 function PracticalPage() {
   const [vivaExamData, setVivaExamData] = useState({});
@@ -54,7 +54,7 @@ function PracticalPage() {
       <div>
         <div className="flex px-12 py-4 justify-between">
           <span className="text-[#0C49CA] text-2xl font-medium font-custom my-2">
-            Viva/Practical
+            VC
           </span>
         </div>
         <div className="min-h-screen bg-[#F3F7FF] flex flex-col mx-8 px-8 gap-4 border rounded-2xl ">

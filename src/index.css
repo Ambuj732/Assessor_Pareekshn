@@ -60,3 +60,22 @@
 .scrollbar-blue::-webkit-scrollbar-track {
         background: #EDF2FF;
 }
+
+
+@media print {
+        body * {
+                visibility: hidden;
+        }
+
+        #printable-section,
+        #printable-section * {
+                visibility: visible;
+        }
+
+        #printable-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+        }
+}

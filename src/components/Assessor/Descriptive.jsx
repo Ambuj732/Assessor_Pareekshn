@@ -10,30 +10,40 @@ import camera from "../../assets/Assessor/camera.png";
 import upload from "../../assets/Assessor/upload.png";
 import manoj from "../../assets/Assessor/manoj.png";
 import Header from "./Header";
-import vivaStudentList from "../../actions/AssessorDashboard/vivaStudentList";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+import { Oval } from "react-loader-spinner";
+import descriptiveStudentList from "../../actions/AssessorDashboard/descriptiveStudentList";
+
 function VivaPractical() {
-  const [vivaStudentLists, setVivaStudentLists] = useState([]);
+  const [descriptiveStudentLists, setDescriptiveStudentLists] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState(null);
+  const location = useLocation();
+  const exam_id = location.state?.exam_id;
+  console.log(exam_id);
+
   const navigate = useNavigate();
 
-  const getStudentVivaListData = async () => {
+  const getDescriptiveStudentListData = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(localStorage.getItem("assessor_user"));
       console.log("User :: ", user);
       const data = {
-        usercode: user,
-        assessor_id: 160,
-        exam_id: 8558,
+        usercode: user?.usercode,
+        assessor_id: user?.id,
+        exam_id: exam_id,
       };
-      const response = await vivaStudentList(data);
-      console.log(" Viva student list", response);
+      console.log(data);
+      const response = await descriptiveStudentList(data);
+      console.log(" Descriptive student list", response);
       if (response?.data?.code === 1000)
-        setVivaStudentLists(response?.data?.students);
+        setDescriptiveStudentLists(response?.data?.students);
+      setLoading(false);
       console.log(response);
     } catch (error) {
       console.log("Error while getting data :: ", error);
       setErrors([error.message]);
+      setLoading(false);
     }
   };
 
@@ -41,9 +51,36 @@ function VivaPractical() {
     navigate(-1);
   };
 
+  const goToDescriptiveAnswer = (student_id) => {
+    console.log(student_id);
+    navigate("/descriptive-answer", {
+      state: { student_id, exam_id: exam_id },
+    });
+  };
+
   useEffect(() => {
-    getStudentVivaListData();
+    getDescriptiveStudentListData();
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="flex justify-center items-center min-h-screen">
+          <Oval
+            height={80}
+            width={80}
+            color="#1C4481"
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#EAF2FE"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col">
@@ -51,13 +88,18 @@ function VivaPractical() {
       <div className="min-h-screen p-4 bg-[#EDEDED] flex">
         <div className="bg-white p-4 w-full rounded-2xl">
           <div className="flex items-center gap-2">
-            <img src={arrowLeft} alt="" className="h-8" onClick={handleBack} />
+            <img
+              src={arrowLeft}
+              alt=""
+              className="h-7 cursor-pointer"
+              onClick={handleBack}
+            />
             <span className="text-black font-semibold text-lg">
               Descriptive
             </span>
           </div>
-          {vivaStudentLists.length > 0 &&
-            vivaStudentLists.map((data) => (
+          {descriptiveStudentLists.length > 0 &&
+            descriptiveStudentLists.map((data) => (
               <>
                 <div className="bg-[#EDF2FF] h-56 w-full rounded-2xl my-4 p-4 mb-8">
                   <div className="flex items-center justify-between pr-8 mb-3">
@@ -70,7 +112,10 @@ function VivaPractical() {
                         <span>Candidate ID:{data.studentid}</span>
                       </div>
                     </div>
-                    <div className="w-52 py-2 bg-[#0C49CA] flex items-center justify-center h-16 rounded-full text-white font-medium cursor-pointer">
+                    <div
+                      className="w-52 py-2 bg-[#0C49CA] flex items-center justify-center h-16 rounded-full text-white font-medium cursor-pointer"
+                      onClick={() => goToDescriptiveAnswer(data.student_id)}
+                    >
                       <span>Marks Submission</span>
                     </div>
                   </div>

@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import arrowLeft from "../../assets/Assessor/arrowLeft.png";
-import vc from "../../assets/Assessor/vc.png";
-import batchdetails from "../../assets/Assessor/batchdetails.png";
-import descriptive from "../../assets/Assessor/descriptive.png";
-import pc from "../../assets/Assessor/pc.png";
-import viva from "../../assets/Assessor/viva.png";
 import red from "../../assets/Assessor/red.svg";
 import green from "../../assets/Assessor/green.svg";
 import yellow from "../../assets/Assessor/yellow.svg";
@@ -14,32 +9,41 @@ import lblue from "../../assets/Assessor/lblue.svg";
 import studentdetails from "../../assets/Assessor/studentdetails.png";
 import camera from "../../assets/Assessor/camera.png";
 import upload from "../../assets/Assessor/upload.png";
-import manoj from "../../assets/Assessor/manoj.png";
 import Header from "./Header";
 import candidateExamStatusandDetailsList from "../../actions/AssessorDashboard/candidateExamStatusandDetailsList";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+import { Oval } from "react-loader-spinner";
 
 function VivaPractical() {
   const [studentData, setStudentData] = useState([]);
   const [errors, setErrors] = useState(null);
+  const location = useLocation();
+  const exam_id = location.state?.exam_id;
+  console.log(exam_id);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
   const getStudentDetailsData = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(localStorage.getItem("assessor_user"));
       console.log("User :: ", user);
       const data = {
-        usercode: user,
-        assessor_id: 160,
-        exam_id: 8558,
+        usercode: user?.usercode,
+        assessor_id: user?.id,
+        exam_id: exam_id,
       };
+      console.log("Assessor Sending data:", data);
       const response = await candidateExamStatusandDetailsList(data);
       console.log(" Candidate Exam Status and Details List", response);
       if (response?.data?.code === 1000)
         setStudentData(response?.data?.students);
+      setLoading(false);
+
       console.log(response);
     } catch (error) {
       console.log("Error while getting data :: ", error);
       setErrors([error.message]);
+      setLoading(false);
     }
   };
 
@@ -48,12 +52,38 @@ function VivaPractical() {
   };
 
   const handlePrint = () => {
+    const printContents =
+      document.getElementById("printable-section").innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
     window.print();
+    document.body.innerHTML = originalContents;
+    window.location.reload();
   };
 
   useEffect(() => {
     getStudentDetailsData();
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="flex justify-center items-center min-h-screen">
+          <Oval
+            height={80}
+            width={80}
+            color="#1C4481"
+            visible={true}
+            ariaLabel="oval-loading"
+            secondaryColor="#EAF2FE"
+            strokeWidth={2}
+            strokeWidthSecondary={2}
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="flex flex-col">
@@ -65,7 +95,7 @@ function VivaPractical() {
               <img
                 src={arrowLeft}
                 alt=""
-                className="w-10 h-10"
+                className="w-7 h-7 cursor-pointer"
                 onClick={handleBack}
               />
               <span className="text-black font-semibold text-lg">
@@ -82,7 +112,10 @@ function VivaPractical() {
               </button>
             </div>
           </div>
-          <div className="flex  justify-between gap-7 mt-1 ">
+          <div
+            id="printable-section"
+            className="flex  justify-between gap-7 mt-1 "
+          >
             <div className="flex flex-col h-screen w-3/4 overflow-y-scroll printable  ">
               {studentData.length > 0 &&
                 studentData.map((data) => (
@@ -104,14 +137,28 @@ function VivaPractical() {
                         </div>
                       </div>
                       <div
-                        className={` cursor-pointer w-32 flex items-center justify-center h-10 rounded-lg text-white font-medium ${
-                          data.login_status === 1
+                        className={`cursor-pointer w-32 flex items-center justify-center h-10 rounded-lg text-white font-medium ${
+                          data.vivadone === 1
+                            ? "bg-gray-400"
+                            : data.vivadone === 2
+                            ? "bg-yellow-400"
+                            : data.vivadone === 3
+                            ? "bg-blue-400"
+                            : data.login_status === 1 && data.exam_screen === 1
                             ? "bg-[#4CAF50]"
                             : "bg-[#CA4D4D]"
                         }`}
                       >
                         <span>
-                          {data.login_status === 1 ? "Online" : "Offline"}
+                          {data.vivadone === 1
+                            ? "Theory Done"
+                            : data.vivadone === 2
+                            ? "Viva/Practical Done"
+                            : data.vivadone === 3
+                            ? "Both Done"
+                            : data.login_status === 1
+                            ? "Online"
+                            : "Offline"}
                         </span>
                       </div>
                     </div>

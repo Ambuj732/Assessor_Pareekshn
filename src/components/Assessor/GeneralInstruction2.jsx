@@ -30,11 +30,9 @@ function Instruction() {
                 <li>Duis rhoncus nunc a hendrerit volutpat.</li>
               </ul>
             </div>
-            <Link to="/startpractical">
-              <div className=" mt-10 text-nowrap border cursor-pointer rounded-3xl text-white py-3 px-10 bg-[#1C4481]">
-                <span>Start Viva Practical</span>
-              </div>
-            </Link>
+            <div className=" mt-10 text-nowrap border cursor-pointer rounded-3xl text-white py-3 px-10 bg-[#1C4481]">
+              <span>Start Viva Practical</span>
+            </div>
           </div>
         </div>
         <span className="text-xl text-white font-medium">

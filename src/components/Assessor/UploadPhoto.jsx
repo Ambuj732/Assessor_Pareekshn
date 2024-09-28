@@ -2,13 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import Header from "../../components/Assessor/Header";
 import arrowLeft from "../../assets/LoginScreen/arrowLeft.png";
 import upload from "../../assets/LoginScreen/upload.png";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import imageUploadAssessor from "../../actions/LoginScreen/imageUploadAssessor";
 import Webcam from "react-webcam";
 
 function UploadPhoto() {
   const navigate = useNavigate();
   const webcamRef = useRef(null);
+  const location = useLocation(); // Get exam_id from location.state
+  const exam_id = location.state?.exam_id;
+  console.log(exam_id);
   const [capturedImage, setCapturedImage] = useState(null);
   const [isWebcamOpen, setIsWebcamOpen] = useState(false);
 
@@ -22,14 +25,14 @@ function UploadPhoto() {
       const assessor_user = JSON.parse(localStorage.getItem("assessor_user"));
       console.log(assessor_user);
       const data = {
-        usercode: assessor_user?.token,
-        assessor_id: 160,
-        exam_id: 8558,
+        usercode: assessor_user?.usercode,
+        assessor_id: assessor_user?.id,
+        exam_id: exam_id,
         file: capturedImage,
       };
       console.log(data);
       await imageUploadAssessor(data);
-      navigate("/assessor-examlist");
+      navigate("/assessor-home", { state: { exam_id } });
     } catch (error) {
       console.log("Error while uploading photo:", error);
     }
@@ -54,18 +57,14 @@ function UploadPhoto() {
     <div className="w-screen h-screen">
       <Header />
       <div className="flex justify-center items-center mt-20">
-        <div className="flex flex-col justify-center items-center border rounded-3xl w-[450px] h-[500px] ">
-          <div className="flex justify-between items-center w-full px-10">
+        <div className="flex flex-col py-14 px-2 border rounded-3xl w-[450px] h-auto ">
+          <div className="flex items-center w-full px-10">
             <img
               src={arrowLeft}
               alt=""
               className="bg-[#1C4481] w-6 h-6 rounded-full cursor-pointer"
               onClick={handleBack}
             />
-            <div className="flex flex-col items-end">
-              <span className="font-semibold text-[#AFAFAF]">Candidate</span>
-              <span className="font-semibold text-[#555555]">Panel</span>
-            </div>
           </div>
           <div className="flex flex-col justify-between text-sm items-center gap-6 my-8">
             <span className="font-bold">Upload/Capture photo</span>
@@ -93,7 +92,7 @@ function UploadPhoto() {
                 <img
                   src={capturedImage}
                   alt="Captured"
-                  className="w-24 h-24 rounded-full"
+                  className="w-40 h-40 rounded-full"
                 />
                 <button
                   onClick={retakePhoto}
